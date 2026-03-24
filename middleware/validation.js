@@ -1,33 +1,38 @@
 import pool from "../db/index.js";
 
-// VALIDAR USUARIO (para tu ruta /usuarios)
 export const validarUsuario = (req, res, next) => {
-  const { nombre, email, telefono } = req.body;
+  const { nombre, correo, telefono } = req.body;
 
-  if (!nombre || nombre.length < 3) {
+  if (!nombre || nombre.trim().length < 3) {
     return res.status(400).json({ error: "Nombre inválido" });
   }
 
-  if (!email || !email.includes("@")) {
-    return res.status(400).json({ error: "Email inválido" });
+  if (!correo || !correo.includes("@")) {
+    return res.status(400).json({ error: "Correo inválido" });
   }
 
-  if (!telefono || telefono.length < 8) {
+  if (!telefono || telefono.trim().length < 8) {
     return res.status(400).json({ error: "Teléfono inválido" });
   }
 
   next();
 };
 
-// VALIDAR RESERVA DUPLICADA
 export const validarReservaDuplicada = async (req, res, next) => {
   try {
-    const { persona_id, actividad_id } = req.body;
+    const { cliente_id, actividad_id } = req.body;
+
+    if (!cliente_id || !actividad_id) {
+      return res.status(400).json({
+        error: "cliente_id y actividad_id son obligatorios"
+      });
+    }
 
     const existe = await pool.query(
-      `SELECT * FROM reservas 
-       WHERE persona_id = $1 AND actividad_id = $2`,
-      [persona_id, actividad_id]
+      `SELECT reserva_id
+       FROM reserva
+       WHERE cliente_id = $1 AND actividad_id = $2`,
+      [cliente_id, actividad_id]
     );
 
     if (existe.rows.length > 0) {
@@ -42,25 +47,34 @@ export const validarReservaDuplicada = async (req, res, next) => {
   }
 };
 
-// VALIDAR CUPO
 export const validarCupo = async (req, res, next) => {
   try {
     const { actividad_id } = req.body;
 
     const actividad = await pool.query(
-      "SELECT cupo_maximo FROM actividades WHERE actividad_id = $1",
+      `SELECT cupo_maximo
+       FROM actividad
+       WHERE actividad_id = $1`,
       [actividad_id]
     );
+
+    if (actividad.rows.length === 0) {
+      return res.status(404).json({
+        error: "Actividad no encontrada"
+      });
+    }
 
     const reservas = await pool.query(
-      "SELECT COUNT(*) FROM reservas WHERE actividad_id = $1",
+      `SELECT COUNT(*) AS total
+       FROM reserva
+       WHERE actividad_id = $1`,
       [actividad_id]
     );
 
-    const total = parseInt(reservas.rows[0].count);
-    const max = actividad.rows[0].cupo_maximo;
+    const totalReservas = parseInt(reservas.rows[0].total, 10);
+    const cupoMaximo = actividad.rows[0].cupo_maximo;
 
-    if (total >= max) {
+    if (totalReservas >= cupoMaximo) {
       return res.status(400).json({
         error: "Cupo lleno"
       });
