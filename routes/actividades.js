@@ -1,5 +1,6 @@
 import { Router } from "express";
 const router = Router();
+import pool from "../db/index.js";
 
 // UPDATE (PUT) - Reprogramar actividad completa
 router.put("/:id", async (req, res, next) => {
@@ -24,24 +25,6 @@ router.put("/:id", async (req, res, next) => {
       return res.status(404).json({ message: "Actividad no encontrada" });
     }
     res.json(actividadAct.rows[0]);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// DELETE lógico de actividad
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    // Cambia el estado_actividad a 'Cancelada' (eliminación lógica)
-    const result = await pool.query(
-      `UPDATE actividad SET estado_actividad = 'Cancelada' WHERE actividad_id = $1 RETURNING *`,
-      [id]
-    );
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Actividad no encontrada' });
-    }
-    res.json({ message: 'Actividad eliminada lógicamente', actividad: result.rows[0] });
   } catch (error) {
     next(error);
   }
