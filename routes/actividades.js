@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import pool from "../db";
+import pool from "../db/index.js";
 
 // UPDATE (PUT) - Reprogramar actividad completa
 router.put("/:id", async (req, res, next) => {

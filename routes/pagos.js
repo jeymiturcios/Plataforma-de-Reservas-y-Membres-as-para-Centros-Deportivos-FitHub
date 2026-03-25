@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import pool from "../db";
+import pool from "../db/index.js";
 
 // UPDATE (PATCH) - Corregir referencia o método de pago
 router.patch("/:id", async (req, res, next) => {

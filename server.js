@@ -1,5 +1,10 @@
 import express from "express";
 import pool from "./db/index.js";
+import clientesRouter from "./routes/clientes.js";
+import reservasRouter from "./routes/reservas.js";
+import actividadesRouter from "./routes/actividades.js";
+import pagosRouter from "./routes/pagos.js";
+import membresiaRouter from "./routes/membresia.js";
 import {
   validarUsuario,
   validarReservaDuplicada,
@@ -90,6 +95,14 @@ app.post("/reservas", validarReservaDuplicada, validarCupo, async (req, res, nex
   }
 });
 
+// Conexión de las rutas de la API
+app.use("/api/clientes", clientesRouter);
+app.use("/api/reservas", reservasRouter);
+app.use("/api/actividades", actividadesRouter);
+app.use("/api/pagos", pagosRouter);
+app.use("/api/membresias", membresiaRouter);
+
+// MANEJO DE ERRORES (debe ir al final)
 app.use(errorHandler);
 
 app.listen(PORT, () => {

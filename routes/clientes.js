@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import pool from "../db";
+import pool from "../db/index.js";
 
 // UPDATE (PUT) - Modificar datos personales completos
 router.put("/:id", async (req, res, next) => {
@@ -36,7 +36,7 @@ router.patch("/:id/estado", async (req, res, next) => {
     const { id } = req.params;
     const { estado_cliente } = req.body;
 
-    const estadoAct = await query(
+    const estadoAct = await pool.query(
       `UPDATE cliente 
        SET estado_cliente = $1
        WHERE persona_id = $2

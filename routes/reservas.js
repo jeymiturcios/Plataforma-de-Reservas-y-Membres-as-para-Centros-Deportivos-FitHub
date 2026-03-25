@@ -2,7 +2,7 @@
 
 import { Router } from "express";
 const router = Router();
-import pool from "../db";
+import pool from "../db/index.js";
 
 import { validarReservaDuplicada, validarCupo } from "../middleware/validation";
 
@@ -10,13 +10,13 @@ import { validarReservaDuplicada, validarCupo } from "../middleware/validation";
 router.post("/", validarReservaDuplicada, validarCupo, async (req, res, next) => {
   try {
 
-    const { persona_id, actividad_id } = req.body;
+    const { cliente_id, actividad_id, precio_aplicado, observacion } = req.body;
 
     const nueva = await pool.query(
-      `INSERT INTO reservas (persona_id, actividad_id, estado)
-       VALUES ($1, $2, 'creada')
+      `INSERT INTO reserva (cliente_id, actividad_id, fecha_reserva, precio_aplicado, estado_reserva, observacion)
+       VALUES ($1, $2, NOW(), $3, 'confirmada', $4)
        RETURNING *`,
-      [persona_id, actividad_id]
+      [cliente_id, actividad_id, precio_aplicado, observacion] 
     );
 
     res.json(nueva.rows[0]);
