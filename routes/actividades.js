@@ -49,3 +49,46 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 export default router;
+
+
+// 1. GET General (/all)
+router.get("/all", async (req, res, next) => {
+  try {
+    const result = await pool.query("SELECT * FROM actividad ORDER BY actividad_id ASC");
+
+    if (result.rows.length === 0) {
+      return res.status(200).json({ 
+        message: "No hay actividades registradas en FitHub todavía.", 
+        data: [] 
+      });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+
+    next(error); 
+  }
+});
+
+
+
+
+router.get("/filtro/sede", async (req, res, next) => {
+  try {
+    const { id_sede } = req.query;
+    
+    if (!id_sede) {
+      return res.status(400).json({ error: "Debes proporcionar un id_sede para filtrar" });
+    }
+
+    const result = await pool.query("SELECT * FROM actividad WHERE id_sede = $1", [id_sede]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "No se encontraron actividades para esta sede" });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+});
