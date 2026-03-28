@@ -52,8 +52,8 @@ Relaciones importantes:
 ### 1. Clonar repositorio
 
 ```bash
-git clone <URL_DEL_REPO>
-cd <NOMBRE_DEL_PROYECTO>
+git clone <https://github.com/jeymiturcios/Plataforma-de-Reservas-y-Membres-as-para-Centros-Deportivos-FitHub.git >
+cd <Plataforma-de-Reservas-y-Membres-as-para-Centros-Deportivos-FitHub >
 ```
 
 ### 2. Instalar dependencias
@@ -73,7 +73,10 @@ DB_NAME=postgres
 DB_PASSWORD=TU_PASSWORD
 DB_PORT=5432
 ```
+### 4. Reiniciar el servidos 
 
+taskkill /F /IM node.exe
+node server.js
 ---
 
 ## 🔌 Conexión a Supabase
@@ -120,6 +123,7 @@ GET http://localhost:3000/db-test
 
 ```bash
 npm run dev
+npm start
 ```
 
 Servidor corriendo en:
@@ -255,25 +259,43 @@ Se utilizó Postman para validar:
 ```
 /db
   index.js
+/docs
+ chenn-eer-fithub-christopher.pdf
+ Crow's Foot.pdf
 /middleware
   validation.js
   errorHandler.js
+/postman
+FitHub API.postman_collection
+FitHub_Env.postman_environment
 /routes
   reserva.js
+  actividades.js
+  pagos.js
+  personas.js
+  membresia.js
+  cliente.js
 /sql
   seed.sql
+  schema.sql
 server.js
+supabase.js
+supabase.ts
 .env
 README.md
+server.js
 ```
 
 ---
 
-## 👨‍💻 Autor
+## 👥 Equipo y Distribución de Roles
 
-Proyecto desarrollado por:
-
-**Elmer Darío Izaguirre Flores**
+De acuerdo con los lineamientos de evaluación, cada integrante implementó y documentó su servicio asignado:
+Jeymi  Turcios: Liderazgo técnica, refactorización del sistema, diseño del diagrama de base de datos en Supabase y configuración de conexión segura (SSL/Pooler).
+Christopher Duarte: Creación del modelado CHEN y desarrollo de la funcionalidad Create (POST) para los recursos principales.
+Gerardo Perdomo: Diseño del modelado Crow's Foot e implementación de la funcionalidad Read (GET) con optimización de consultas.
+Johan Moreno: Implementación de la funcionalidad Delete (borrado lógico y físico) y mantenimiento de rutas.
+Elmer Izaguirre: Desarrollo de las Validaciones de seguridad y carga de los 15 registros iniciales (Seed) requeridos por la rúbrica.
 
 ---
 
