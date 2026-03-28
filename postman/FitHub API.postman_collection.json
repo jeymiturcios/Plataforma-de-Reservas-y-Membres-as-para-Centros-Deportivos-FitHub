@@ -1,0 +1,442 @@
+{
+  "info": {
+    "_postman_id": "838953c5-fbd0-4128-8546-bda291443ced",
+    "name": "FitHub API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44938329",
+    "_collection_link": "https://go.postman.co/collection/44938329-838953c5-fbd0-4128-8546-bda291443ced?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Personas",
+      "item": [
+        {
+          "name": "Crear Persona",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Josselyn Turcios\",\n  \"correo\": \"josselyn@email.com\",\n  \"fecha_nacimiento\": \"2000-01-01\",\n  \"telefono\": \"9999-9999\",\n  \"dir_departamento\": \"Cortés\",\n  \"dir_ciudad\": \"Puerto Cortés\",\n  \"dir_colonia\": \"Centro\",\n  \"dir_calle_ave\": \"Calle Principal\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/personas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "personas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Personas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/personas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "personas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Persona",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Josselyn Turcios\",\r\n  \"correo\": \"josselyn@email.com\",\r\n  \"fecha_nacimiento\": \"2000-01-01\",\r\n  \"telefono\": \"8888-8888\",\r\n  \"dir_departamento\": \"Cortés\",\r\n  \"dir_ciudad\": \"Puerto Cortés\",\r\n  \"dir_colonia\": \"Barrio El Centro\",\r\n  \"dir_calle_ave\": \"Calle Principal\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/personas/19",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "personas",
+                "19"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Persona",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/personas/19",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "personas",
+                "19"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Actividades",
+      "item": [
+        {
+          "name": "Crear Actividad",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"sede_id\": 1,\r\n  \"entrenador_id\": 16,\r\n  \"nombre_actividad\": \"Yoga Matutino\",\r\n  \"tipo_actividad\": \"clase grupal\",\r\n  \"descripcion\": \"Clase de yoga para principiantes\",\r\n  \"cupo_maximo\": 10,\r\n  \"costo\": 150.00,\r\n  \"fecha_hora_inicio\": \"2026-03-25T14:00:00.000Z\",\r\n  \"fecha_hora_fin\": \"2026-03-25T15:00:00.000Z\",\r\n  \"estado_actividad\": \"activa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/actividades",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "actividades"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Actividad",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/actividades/all",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "actividades",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Activida",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre_actividad\": \"Yoga Avanzado\",\r\n  \"tipo_actividad\": \"clase grupal\",\r\n  \"descripcion\": \"Clase de yoga nivel avanzado\",\r\n  \"cupo_maximo\": 15,\r\n  \"costo\": 200.00,\r\n  \"fecha_hora_inicio\": \"2026-03-25T14:00:00.000Z\",\r\n  \"fecha_hora_fin\": \"2026-03-25T15:00:00.000Z\",\r\n  \"estado_actividad\": \"activa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/actividades/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "actividades",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Actividad",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre_actividad\": \"Yoga Avanzado\",\r\n  \"tipo_actividad\": \"clase grupal\",\r\n  \"descripcion\": \"Clase de yoga nivel avanzado\",\r\n  \"cupo_maximo\": 15,\r\n  \"costo\": 200.00,\r\n  \"fecha_hora_inicio\": \"2026-03-25T14:00:00.000Z\",\r\n  \"fecha_hora_fin\": \"2026-03-25T15:00:00.000Z\",\r\n  \"estado_actividad\": \"activa\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/actividades/6",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "actividades",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reservas",
+      "item": [
+        {
+          "name": "Crear reserva",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "  {\r\n        \"reserva_id\": \"3\",\r\n        \"cliente_id\": \"12\",\r\n        \"actividad_id\": \"3\",\r\n        \"fecha_reserva\": \"2026-03-28T10:43:43.867Z\",\r\n        \"precio_aplicado\": \"200.00\",\r\n        \"estado_reserva\": \"confirmada\",\r\n        \"observacion\": \"Sin observaciones\",\r\n        \"nombre_actividad\": \"Yoga Avanzado\",\r\n        \"nombre_cliente\": \"Josselyn Turcios\"\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/reservas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "reservas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Reserva",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/reservas/all",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "reservas",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Reserva",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"cliente_id\": 12,\r\n  \"actividad_id\": 3,\r\n  \"precio_aplicado\": 200.00,\r\n  \"estado_reserva\": \"sin confirmar\",\r\n  \"observacion\": \"Actualizada\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/reservas/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "reservas",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Reserva",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"cliente_id\": 12,\r\n  \"actividad_id\": 3,\r\n  \"precio_aplicado\": 200.00,\r\n  \"estado_reserva\": \"sin confirmar\",\r\n  \"observacion\": \"Actualizada\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/reservas/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "reservas",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pagos",
+      "item": [
+        {
+          "name": "Crear Pago",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"reserva_id\": 3,\r\n  \"membresia_id\": null,\r\n  \"monto\": 200.00,\r\n  \"fecha_pago\": \"2026-03-26\",\r\n  \"metodo_pago\": \"tarjeta\",\r\n  \"tipo_pago\": \"reserva de actividad\",\r\n  \"referencia\": \"REF-002\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/pagos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "pagos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener pagos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/pagos/all",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "pagos",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar pago",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"referencia\": \"REF-001\",\r\n  \"metodo_pago\": \"Tarjeta\",\r\n  \"monto\": 300.00\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/pagos/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "pagos",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/pagos/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "pagos",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
