@@ -1,99 +1,131 @@
-// routes/reservas.js
-
-import { Router } from "express";
-const router = Router();
-import pool from "../db/index.js";
-
-import { validarReservaDuplicada, validarCupo } from "../middleware/validation";
-
-// CREATE (POST)
-router.post("/", validarReservaDuplicada, validarCupo, async (req, res, next) => {
+// 1. GET General (/all) - Lista de todas las reservas
+router.get("/all", async (req, res, next) => {
   try {
+    // Nota: Usamos JOIN para que Johan vea nombres en lugar de solo IDs
+    const result = await pool.query(`
+      SELECT r.*, a.nombre_actividad, p.nombre as nombre_cliente
+      FROM reserva r
+      JOIN actividad a ON r.actividad_id = a.actividad_id
+      JOIN persona p ON r.persona_id = p.persona_id
+      ORDER BY r.fecha_reserva DESC
+    `);
 
-    const { cliente_id, actividad_id, precio_aplicado, observacion } = req.body;
+    // B. Validación de "Base de Datos Vacía"
+    if (result.rows.length === 0) {
+      return res.status(200).json({ 
+        message: "No hay reservas registradas en el sistema.", 
+        data: [] 
+      });
+    }
 
-    const nueva = await pool.query(
-      `INSERT INTO reserva (cliente_id, actividad_id, fecha_reserva, precio_aplicado, estado_reserva, observacion)
-       VALUES ($1, $2, NOW(), $3, 'confirmada', $4)
-       RETURNING *`,
-      [cliente_id, actividad_id, precio_aplicado, observacion] 
-    );
-    res.json(nueva.rows[0]);
+    res.json(result.rows);
+  } catch (error) {
+    // C. Manejo de Errores del Servidor (500)
+    next(error);
+  }
+});
+
+// 2. GET por ID (/:id) - Detalle de una reserva específica
+router.get("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query("SELECT * FROM reserva WHERE reserva_id = $1", [id]);
+
+    // A. Validación de "No Encontrado" (404)
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "La reserva solicitada no fue encontrada" });
+    }
+
+    res.json(result.rows[0]);
   } catch (error) {
     next(error);
   }
 });
 
-// DELETE lógico de reserva
-router.delete("/:id", async (req, res, next) => {
+// 3. GET con Filtro - Reservas por fecha específica
+// Ejemplo en Postman: /api/reservas/filtro/fecha?dia=2026-03-27
+router.get("/filtro/fecha", async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { dia } = req.query; // Capturamos la fecha desde el Query String (?dia=...)
+    
+    if (!dia) {
+      return res.status(400).json({ error: "Debes proporcionar una fecha válida (?dia=YYYY-MM-DD)" });
+    }
 
-    // Cambia el estado_reserva a 'Cancelada' (eliminación lógica)
     const result = await pool.query(
-      `UPDATE reserva
-       SET estado_reserva = 'Cancelada'
-       WHERE reserva_id = $1
-       RETURNING *`,
-      [id]
+      "SELECT * FROM reserva WHERE fecha_reserva::date = $1", 
+      [dia]
     );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Reserva no encontrada" });
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: `No se encontraron reservas para el día ${dia}` });
     }
 
-    res.json({ message: "Reserva eliminada lógicamente", reserva: result.rows[0] });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Actualización Total (PUT)
-router.put("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { cliente_id, actividad_id, precio_aplicado, estado_reserva, observacion } = req.body;
-
-    const actualizada = await pool.query(
-      `UPDATE reserva 
-       SET cliente_id = $1, actividad_id = $2, precio_aplicado = $3, 
-           estado_reserva = $4, observacion = $5
-       WHERE reserva_id = $6
-       RETURNING *`,
-      [cliente_id, actividad_id, precio_aplicado, estado_reserva, observacion, id]
-    );
-
-    if (actualizada.rows.length === 0) {
-      return res.status(404).json({ message: "Reserva no encontrada" });
-    }
-    res.json(actualizada.rows[0]);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Actualización de Estado y Observación (PATCH)
-router.patch("/:id/estado", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { estado_reserva, observacion } = req.body;
-
-    const parcheada = await pool.query(
-      `UPDATE reserva 
-       SET estado_reserva = COALESCE($1, estado_reserva), 
-           observacion = COALESCE($2, observacion)
-       WHERE reserva_id = $3
-       RETURNING *`,
-      [estado_reserva, observacion, id]
-    );
-
-    if (parcheada.rows.length === 0) {
-      return res.status(404).json({ message: "Reserva no encontrada" });
-    }
-    res.json(parcheada.rows[0]);
+    res.json(result.rows);
   } catch (error) {
     next(error);
   }
 });
 
 export default router;
+
+const express = require('express');
+const router = express.Router();
+const db = require('./db');
+
+router.get('/all', async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT * FROM reservas");
+
+       
+        if (rows.length === 0) {
+            return res.status(200).json({ 
+                message: "Consulta exitosa, pero la tabla de reservas está vacía actualmente.",
+                data: [] 
+            });
+        }
+
+        res.status(200).json(rows);
+    } catch (error) {
+        
+        res.status(500).json({ 
+            error: "Error interno del servidor al obtener las reservas",
+            sqlError: error.message 
+        });
+    }
+});
+
+
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [rows] = await db.query("SELECT * FROM reservas WHERE id = ?", [id]);
+
+    
+        if (rows.length === 0) {
+            return res.status(404).json({ 
+                error: `La reserva con ID ${id} no fue encontrada.` 
+            });
+        }
+
+        res.status(200).json(rows[0]);
+    } catch (error) {
+        
+        res.status(500).json({ 
+            error: "Error al procesar la búsqueda por ID",
+            sqlError: error.message 
+        });
+    }
+});
+
+
+
+      
+        res.status(500).json({ 
+            error: "Error al filtrar las reservas por sede",
+            sqlError: error.message 
+        });
+    }
+});
+
+module.exports = router;
