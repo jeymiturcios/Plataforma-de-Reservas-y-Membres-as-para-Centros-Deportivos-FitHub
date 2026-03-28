@@ -70,7 +70,21 @@ router.get("/all", async (req, res, next) => {
   }
 });
 
+// 2. GET por ID (/:id)
+router.get("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query("SELECT * FROM actividad WHERE actividad_id = $1", [id]);
 
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "La actividad solicitada no fue encontrada" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get("/filtro/sede", async (req, res, next) => {
   try {
@@ -91,3 +105,4 @@ router.get("/filtro/sede", async (req, res, next) => {
     next(error);
   }
 });
+

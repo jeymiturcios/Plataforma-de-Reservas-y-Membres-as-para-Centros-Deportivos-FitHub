@@ -29,3 +29,54 @@ router.patch("/:id/estado", async (req, res) => {
 });
 
 export default router;
+
+router.get("/all", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM membresia ORDER BY costo ASC");
+
+  
+    if (result.rows.length === 0) {
+      return res.status(200).json({ 
+        message: "No hay membresías registradas actualmente.", 
+        data: [] 
+      });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    
+    console.error(error);
+    res.status(500).json({ error: "Error interno al obtener el catálogo de membresías" });
+  }
+});
+
+
+
+
+
+router.get("/filtro/precio", async (req, res) => {
+  try {
+    const { maximo } = req.query;
+    
+    if (!maximo) {
+      return res.status(400).json({ error: "Falta el parámetro de precio máximo (?maximo=X)" });
+    }
+
+    const result = await pool.query(
+      "SELECT * FROM membresia WHERE costo <= $1 ORDER BY costo DESC", 
+      [maximo]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ 
+        error: `No se encontraron planes que cuesten ${maximo} o menos.` 
+      });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al filtrar por presupuesto" });
+  }
+});
+

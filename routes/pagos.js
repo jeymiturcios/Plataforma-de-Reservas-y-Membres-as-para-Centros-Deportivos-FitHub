@@ -45,6 +45,26 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
+export default router;
+
+router.get("/all", async (req, res, next) => {
+  try {
+    const result = await pool.query("SELECT * FROM pago ORDER BY pago_id ASC");
+
+    
+    if (result.rows.length === 0) {
+      return res.status(200).json({ 
+        message: "No se han registrado pagos en el sistema aún.", 
+        data: [] 
+      });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+  
+    next(error);
+  }
+});
 
 
 router.get("/:id", async (req, res, next) => {
