@@ -72,3 +72,60 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 export default router;
+
+router.get("/all", async (req, res, next) => {
+  try {
+    const result = await pool.query(`
+      SELECT p.*, c.estado_cliente, c.fecha_registro 
+      FROM persona p 
+      INNER JOIN cliente c ON p.persona_id = c.persona_id
+      ORDER BY p.persona_id ASC
+    `);
+
+ 
+    if (result.rows.length === 0) {
+      return res.status(200).json({ 
+        message: "No hay registros de clientes en la base de datos.", 
+        data: [] 
+      });
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    
+    next(error);
+  }
+});
+
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(`
+      SELECT p.*, c.estado_cliente 
+      FROM persona p 
+      INNER JOIN cliente c ON p.persona_id = c.persona_id 
+      WHERE p.persona_id = $1
+    `, [id]);
+
+   
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "El cliente no fue encontrado" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
+    res.json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
