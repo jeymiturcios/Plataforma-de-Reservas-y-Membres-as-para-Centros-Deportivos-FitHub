@@ -72,7 +72,6 @@ router.get("/all", async (req, res, next) => {
 
 
 
-
 router.get("/filtro/sede", async (req, res, next) => {
   try {
     const { id_sede } = req.query;
