@@ -1,15 +1,11 @@
 import express from "express";
 import pool from "./db/index.js";
+import personasRouter from "./routes/personas.js";
 import clientesRouter from "./routes/clientes.js";
 import reservasRouter from "./routes/reservas.js";
 import actividadesRouter from "./routes/actividades.js";
 import pagosRouter from "./routes/pagos.js";
 import membresiaRouter from "./routes/membresia.js";
-import {
-  validarUsuario,
-  validarReservaDuplicada,
-  validarCupo
-} from "./middleware/validation.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -30,79 +26,16 @@ app.get("/db-test", async (req, res) => {
   }
 });
 
-app.post("/personas", validarUsuario, async (req, res, next) => {
-  try {
-    const {
-      nombre,
-      correo,
-      fecha_nacimiento,
-      telefono,
-      dir_departamento,
-      dir_ciudad,
-      dir_colonia,
-      dir_calle_ave
-    } = req.body;
+// Rutas de la API
+app.use("/api/personas", personasRouter);
 
-    const nuevaPersona = await pool.query(
-      `INSERT INTO persona
-       (nombre, correo, fecha_nacimiento, telefono, dir_departamento, dir_ciudad, dir_colonia, dir_calle_ave)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-       RETURNING *`,
-      [
-        nombre,
-        correo,
-        fecha_nacimiento,
-        telefono,
-        dir_departamento,
-        dir_ciudad,
-        dir_colonia,
-        dir_calle_ave
-      ]
-    );
-
-    res.status(201).json({
-      mensaje: "Persona creada correctamente",
-      data: nuevaPersona.rows[0]
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.post("/reservas", validarReservaDuplicada, validarCupo, async (req, res, next) => {
-  try {
-    const {
-      cliente_id,
-      actividad_id,
-      precio_aplicado,
-      observacion
-    } = req.body;
-
-    const nuevaReserva = await pool.query(
-      `INSERT INTO reserva
-       (cliente_id, actividad_id, fecha_reserva, precio_aplicado, estado_reserva, observacion)
-       VALUES ($1, $2, NOW(), $3, 'confirmada', $4)
-       RETURNING *`,
-      [cliente_id, actividad_id, precio_aplicado, observacion]
-    );
-
-    res.status(201).json({
-      mensaje: "Reserva creada correctamente",
-      data: nuevaReserva.rows[0]
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Conexión de las rutas de la API
 app.use("/api/clientes", clientesRouter);
 app.use("/api/reservas", reservasRouter);
 app.use("/api/actividades", actividadesRouter);
 app.use("/api/pagos", pagosRouter);
 app.use("/api/membresias", membresiaRouter);
 
-// MANEJO DE ERRORES (debe ir al final)
+// Manejo de errores (siempre al final)
 app.use(errorHandler);
 
 app.listen(PORT, () => {

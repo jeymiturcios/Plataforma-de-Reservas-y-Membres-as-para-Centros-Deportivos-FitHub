@@ -2,7 +2,51 @@ import { Router } from "express";
 const router = Router();
 import pool from "../db/index.js";
 
-// UPDATE (PUT) - Modificar datos personales completos
+// GET todos los clientes
+router.get("/all", async (req, res, next) => {
+  try {
+    const result = await pool.query(`
+      SELECT p.*, c.estado_cliente, c.fecha_registro 
+      FROM persona p 
+      INNER JOIN cliente c ON p.persona_id = c.persona_id
+      ORDER BY p.persona_id ASC
+    `);
+
+    if (result.rows.length === 0) {
+      return res.status(200).json({ 
+        message: "No hay registros de clientes en la base de datos.", 
+        data: [] 
+      });
+    }
+
+    res.json(result.rows);  // ← estaba fuera del try/catch
+  } catch (error) {
+    next(error);
+  }
+});  // ← aquí cierra /all correctamente
+
+// GET cliente por ID
+router.get("/:id", async (req, res, next) => {  // ← estaba anidado dentro de /all
+  try {
+    const { id } = req.params;
+    const result = await pool.query(`
+      SELECT p.*, c.estado_cliente 
+      FROM persona p 
+      INNER JOIN cliente c ON p.persona_id = c.persona_id 
+      WHERE p.persona_id = $1
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "El cliente no fue encontrado" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PUT - Modificar datos personales completos
 router.put("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -30,7 +74,7 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
-// UPDATE (PATCH) - Cambiar solo el estado del cliente (Activo/Inactivo)
+// PATCH - Cambiar estado del cliente
 router.patch("/:id/estado", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -53,11 +97,10 @@ router.patch("/:id/estado", async (req, res, next) => {
   }
 });
 
-// DELETE lógico de cliente
+// DELETE lógico
 router.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    // Cambia el estado_cliente a 'Inactivo' (eliminación lógica)
     const result = await pool.query(
       `UPDATE cliente SET estado_cliente = 'Inactivo' WHERE persona_id = $1 RETURNING *`,
       [id]
@@ -72,60 +115,3 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 export default router;
-
-router.get("/all", async (req, res, next) => {
-  try {
-    const result = await pool.query(`
-      SELECT p.*, c.estado_cliente, c.fecha_registro 
-      FROM persona p 
-      INNER JOIN cliente c ON p.persona_id = c.persona_id
-      ORDER BY p.persona_id ASC
-    `);
-
- 
-    if (result.rows.length === 0) {
-      return res.status(200).json({ 
-        message: "No hay registros de clientes en la base de datos.", 
-        data: [] 
-      });
-    }
-
-    res.json(result.rows);
-  } catch (error) {
-    
-    next(error);
-  }
-});
-
-
-router.get("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(`
-      SELECT p.*, c.estado_cliente 
-      FROM persona p 
-      INNER JOIN cliente c ON p.persona_id = c.persona_id 
-      WHERE p.persona_id = $1
-    `, [id]);
-
-   
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "El cliente no fue encontrado" });
-    }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    next(error);
-  }
-});
-
-
-
-    res.json(result.rows);
-  } catch (error) {
-    next(error);
-  }
-});
-
-
-
